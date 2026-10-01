@@ -1,0 +1,31 @@
+.operations-shell { max-width: 1100px; min-height: 100vh; margin: auto; background: #f6f7f8; color: #192c30; }
+.operations-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 24px; background: #143d39; color: white; }
+.operations-header span { font-size: 10px; letter-spacing: .1em; }
+.operations-header h1 { margin: 8px 0 0; font-size: clamp(23px, 4vw, 32px); }
+.operations-header button { flex-shrink: 0; border: 1px solid #84aba5; padding: 10px; border-radius: 8px; background: transparent; color: white; }
+.operations-content { padding: 24px; }
+.operations-content p { line-height: 1.55; font-size: 14px; }
+.operations-demo-label { display: inline-block; padding: 8px 12px; border-radius: 6px; background: #fff0d8; color: #835818; font-size: 12px; font-weight: 700; }
+.operations-reference { color: #516668; }
+.operations-filter { display: block; max-width: 390px; font-size: 14px; font-weight: 700; margin: 24px 0; }
+.operations-filter select, .operations-costs input { display: block; width: 100%; min-width: 0; min-height: 44px; margin: 8px 0; border: 1px solid #b8cac8; border-radius: 8px; padding: 10px; background: white; font: inherit; }
+.operations-section { min-width: 0; margin: 24px 0; padding: 22px; border: 1px solid #dbe4e2; border-radius: 14px; background: white; }
+.operations-section h2 { font-size: 20px; margin: 0 0 12px; }
+.operations-section h3 { font-size: 15px; margin: 0 0 8px; }
+.operations-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
+.operations-table caption { text-align: left; font-size: 12px; color: #526a68; padding: 10px 0; }
+.operations-table th, .operations-table td { border-bottom: 1px solid #e1e9e7; padding: 12px 8px; overflow-wrap: anywhere; }
+.operations-table th { text-align: left; font-weight: 600; }
+.operations-table th:first-child { width: 48%; }
+.operations-table td { text-align: center; font-variant-numeric: tabular-nums; }
+.operations-table thead { background: #edf5f3; }
+.operations-metric-grid, .operations-participants { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 16px 0; }
+.operations-metric-grid article, .operations-participants article { min-width: 0; padding: 16px; border: 1px solid #dbe4e2; border-radius: 10px; background: #f6faf8; overflow-wrap: anywhere; }
+.operations-metric-grid strong { display: block; color: #206452; font-size: 30px; }
+.operations-status, .operations-cost-result { padding: 14px; border-radius: 8px; background: #fff7e7; }
+.operations-costs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.operations-costs label { min-width: 0; font-size: 13px; font-weight: 600; }
+.operations-participants dt { font-weight: 700; font-size: 12px; }
+.operations-participants dd { margin: 4px 0 12px; font-size: 13px; }
+.demo-operations-link { display: block; border-top: 1px dashed #c4b8df; padding: 14px 0 0; margin-top: 16px; color: #665288; font-size: 12px; }
+@media (max-width: 600px) { .operations-header { flex-direction: column; align-items: flex-start; padding: 20px 16px; } .operations-content { padding: 16px; } .operations-section { padding: 14px; } .operations-metric-grid, .operations-participants, .operations-costs { grid-template-columns: 1fr; } .operations-table { font-size: 12px; } .operations-table th, .operations-table td { padding: 10px 5px; } }

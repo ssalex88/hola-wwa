@@ -1,0 +1,14 @@
+node_modules
+dist
+*.tsbuildinfo
+.DS_Store
+.vercel
+
+# Configuración privada y artefactos locales de la demo.
+.env*
+!.env.example
+artifacts/
+*.log
+
+.vercel
+.env*

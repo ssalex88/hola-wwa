@@ -1,0 +1,7 @@
+artifacts/
+tests/
+docs/
+README.md
+*.tsbuildinfo
+.env*
+.vercel/
