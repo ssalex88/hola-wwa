@@ -3,6 +3,7 @@ import { incrementalReturnCost, type PilotBand } from '../domain/pilotEvaluation
 import { getPilotResults, loadPilotCosts, savePilotCosts, type PilotCosts } from '../services/pilotService'
 import { DEMO_REFERENCE_DATE } from '../services/demoClock'
 import './operations.css'
+import { MentorSessionOperations } from './MentorSessionOperations'
 
 const percentage = (value: number | null) => value === null ? 'Sin denominador' : new Intl.NumberFormat('es-PE', { style: 'percent', maximumFractionDigits: 1 }).format(value)
 const number = (value: number) => new Intl.NumberFormat('es-PE', { maximumFractionDigits: 2 }).format(value)
@@ -32,6 +33,7 @@ export function OperationsPanel({ onBack }: { onBack: () => void }) {
   return <div className="operations-shell">
     <header className="operations-header"><div><span>VUELVE A TU RITMO · OPERACIONES</span><h1>Evaluación del piloto</h1></div><button type="button" onClick={onBack}>Volver a la demo</button></header>
     <main className="operations-content">
+      <MentorSessionOperations />
       <div className="operations-demo-label">Demostración · Cohorte y resultados simulados</div>
       <p>24 participantes ficticios: 12 de intervención y 12 de comparación. Esta cohorte es independiente de los perfiles interactivos; sus acciones no se suman a estos resultados. No son resultados de Rappi.</p>
       <p className="operations-reference">Corte de datos: {date}, hora de Lima. La comparación simula personas sin exposición al programa.</p>

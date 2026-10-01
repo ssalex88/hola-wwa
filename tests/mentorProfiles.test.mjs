@@ -11,7 +11,8 @@ const memory = new Map([['vuelve-a-tu-ritmo:session-reference:v3', reference.toI
 globalThis.sessionStorage = { getItem: key => memory.get(key) ?? null, setItem: (key, value) => memory.set(key, value) }
 const { createDemoState, loadDemoState, saveDemoState, DEMO_STORAGE_KEY } = await import('../src/services/demoStorage.ts')
 const { createMentorProfileService } = await import('../src/services/mentor.local.ts')
-const { mentorService } = await import('../src/services/mentor.ts')
+// B-01 keeps testing its legacy-session reader; the public entry now selects the full motor.
+const { localMentorProfileService: mentorService } = await import('../src/services/mentor.local.ts')
 const profiles = createDemoProfiles(reference)
 beforeEach(() => { memory.clear(); saveDemoState(createDemoState(profiles, reference)) })
 

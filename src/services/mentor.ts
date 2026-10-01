@@ -1,3 +1,6 @@
-/** Punto de entrada para A. B-01 expone consultas; las acciones llegarán por entrega. */
-export { localMentorProfileService as mentorService } from './mentor.local.ts'
-export type { MentorProfileService, ProfileSnapshot, ServiceResult } from '../contracts/mentor.ts'
+import type { MentorService } from '../contracts/mentor.ts'
+import { localMentorService } from './mentor.local.ts'
+
+// Integration selects one implementation here. The mock remains owned by A.
+export const mentorService: MentorService = localMentorService
+export type * from '../contracts/mentor.ts'
