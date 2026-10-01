@@ -1,0 +1,136 @@
+{
+  "ok": true,
+  "data": {
+    "contractVersion": "1.0",
+    "revision": 0,
+    "clock": {
+      "referenceAt": "2026-10-01T15:00:00.000Z",
+      "observedAt": "2026-10-01T15:00:00.000Z",
+      "timeZone": "America/Lima"
+    },
+    "profile": {
+      "id": "inactive-recent",
+      "name": "Camila Torres",
+      "vehicle": "Bicicleta",
+      "zoneId": "lima-centro",
+      "accountStatus": "active",
+      "lastCompletedAt": "2026-09-11T15:00:00.000Z",
+      "scenario": "Inactivo de 20 días",
+      "simulated": true
+    },
+    "eligibility": {
+      "eligible": true,
+      "reason": "eligible",
+      "track": "reactivation",
+      "daysInactive": 20,
+      "pauseBand": "15–30 días",
+      "priority": 1
+    },
+    "contactPermission": {
+      "canShowAppInvitation": true,
+      "canSendExternalInvitation": true,
+      "reason": "allowed"
+    },
+    "preferences": {
+      "allowProgramInvitations": true,
+      "channels": {
+        "app": true,
+        "external": true
+      },
+      "remindersAllowed": true,
+      "consentRecordedAt": "2026-10-01T15:00:00.000Z",
+      "preferredContactDate": null
+    },
+    "goals": [],
+    "contributions": [],
+    "goalProgress": [],
+    "legacyGoalNotes": [],
+    "pause": null,
+    "invitations": [],
+    "savedOptions": [],
+    "reminders": [],
+    "cases": [
+      {
+        "id": "DEMO-inactive-recent-PAGO-01",
+        "kind": "payment",
+        "description": "No aparece el pago de una entrega en el resumen simulado.",
+        "status": "pending",
+        "profileId": "inactive-recent",
+        "createdAt": null,
+        "updatedAt": null,
+        "simulated": true
+      },
+      {
+        "id": "DEMO-inactive-recent-PEDIDO-02",
+        "kind": "order",
+        "description": "Una cancelación de pedido figura pendiente de revisión en el historial simulado.",
+        "status": "in-review",
+        "profileId": "inactive-recent",
+        "createdAt": null,
+        "updatedAt": null,
+        "simulated": true
+      }
+    ],
+    "helpRequests": [],
+    "deliveries": [
+      {
+        "id": "demo-1042-delivery-1",
+        "completedAt": "2026-09-11T15:00:00.000Z",
+        "status": "completed",
+        "profileId": "inactive-recent",
+        "simulated": true
+      },
+      {
+        "id": "demo-1042-delivery-2",
+        "completedAt": "2026-09-08T15:00:00.000Z",
+        "status": "completed",
+        "profileId": "inactive-recent",
+        "simulated": true
+      },
+      {
+        "id": "demo-1042-delivery-3",
+        "completedAt": "2026-09-04T15:00:00.000Z",
+        "status": "completed",
+        "profileId": "inactive-recent",
+        "simulated": true
+      },
+      {
+        "id": "demo-1042-delivery-4",
+        "completedAt": "2026-08-31T15:00:00.000Z",
+        "status": "completed",
+        "profileId": "inactive-recent",
+        "simulated": true
+      }
+    ],
+    "progress": {
+      "interventionStartedAt": null,
+      "eligibleAtStart": false,
+      "origin": null,
+      "step": "configuration",
+      "configuration": {
+        "zone": "Lima Centro",
+        "hours": 2,
+        "moment": "Mañana",
+        "vehicle": "Bicicleta",
+        "scheduleMode": "now",
+        "scheduledDate": null,
+        "expenseFuel": 0,
+        "expenseMaintenance": 0,
+        "expenseOther": 0
+      },
+      "currentProjection": null,
+      "comparisonConfiguration": null,
+      "need": null,
+      "otherNeedDetail": "",
+      "connectedAt": null,
+      "returnedAt": null,
+      "returnDeliveryId": null,
+      "returnFeedback": null
+    },
+    "mentor": {
+      "text": "Revisa cuánto podrías obtener según tu tiempo y zona.",
+      "actions": []
+    }
+  },
+  "revision": 0
+}

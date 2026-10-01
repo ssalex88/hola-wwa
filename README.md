@@ -22,7 +22,30 @@ Para presentar la segunda entrada, reinicia y pulsa **Ver invitación externa**.
 
 ## Trabajo en equipo — HU-00
 
-Antes de dividir el desarrollo, revisen el [acuerdo de integración](docs/integracion/acuerdo-hu00.md) y el [contrato TypeScript propuesto](docs/integracion/mentor-contract.ts). Definen datos, acciones, respuestas, ejemplos y responsabilidades de experiencia y motor. El contrato todavía debe conectarse a los servicios intercambiables; no implica que todas las nuevas historias estén implementadas.
+Antes de dividir el desarrollo, revisen el [acuerdo de integración](docs/integracion/acuerdo-hu00.md) y el [contrato TypeScript compartido](src/contracts/mentor.ts). Definen datos, acciones, respuestas, ejemplos y responsabilidades de experiencia y motor. B-01 implementa `listProfiles` y `getProfile` en `src/services/mentor.ts`; las demás acciones se incorporan por entrega.
+
+### Servicio de perfiles — B-01
+
+```ts
+import { mentorService } from './services/mentor'
+
+const profiles = await mentorService.listProfiles()
+const camila = await mentorService.getProfile('inactive-recent')
+if (camila.ok) {
+  console.log(camila.data.profile, camila.data.deliveries, camila.data.clock)
+}
+```
+
+Las consultas leen el mismo estado por perfil de la demo y devuelven copias independientes; no crean contactos ni reinician la sesión. El resultado incluye preferencias, configuración, progreso, pausa declarada y fechas en ISO, con `America/Lima` como zona de presentación. Un identificador desconocido devuelve `NOT_FOUND`.
+
+Para B y para revisar los datos con A, sin abrir las pantallas:
+
+```bash
+npm run demo:b01
+npm run demo:b01 -- --profile=inactive-recent
+```
+
+El comando usa un caso aislado en memoria y una referencia fija. [Ejemplo completo de Camila](docs/integracion/ejemplo-perfil-camila.json) y [criterios y pruebas de B-01](docs/revision-b01.md). Las metas monetarias y aportes siguen pendientes; los objetivos de texto anteriores se exponen como `legacyGoalNotes`, sin convertirlos en dinero.
 
 ## Experiencia y presentación
 

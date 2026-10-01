@@ -12,11 +12,12 @@ import type { ProjectionConfiguration } from '../domain/projectionConfiguration.
 import { copyConfiguration } from '../domain/projectionConfiguration.ts'
 import type { ReturnNeed } from '../domain/returnHelp.ts'
 import { DEMO_REFERENCE_DATE } from './demoClock.ts'
+import type { ContactPreferences } from '../contracts/mentor.ts'
 
 export const DEMO_STORAGE_KEY = 'vuelve-a-tu-ritmo:session:v3'
 export const PILOT_CAMPAIGN_ID = 'pilot-reactivation-v1'
 
-export interface DemoPreferences extends ProjectionConfiguration {
+export interface DemoPreferences extends ProjectionConfiguration, ContactPreferences {
   comparisonOption: ProjectionConfiguration | null
   programStep: 'configuration' | 'projection' | 'comparison'
   returnNeed: ReturnNeed | null
@@ -30,6 +31,7 @@ export interface DemoPreferences extends ProjectionConfiguration {
 }
 
 export interface ProfileDemoData {
+  revision: number
   goals: string[]
   returnTracking: ReturnTracking
   connection: DemoConnection
@@ -51,16 +53,17 @@ export interface DemoState {
   profileDataById: Record<string, ProfileDemoData>
 }
 
-export function initialProfileData(profile: DemoProfile): ProfileDemoData {
+export function initialProfileData(profile: DemoProfile, reference: Date = DEMO_REFERENCE_DATE): ProfileDemoData {
   return {
+    revision: 0,
     goals: [],
     returnTracking: { interventionStartedAt: null, observedAt: null, feedback: null },
     connection: { connectedAt: null },
     support: createDemoSupportData(profile.id),
     incentiveEnrollments: {},
-    incentiveAwards: createDemoIncentiveAwards(profile, DEMO_REFERENCE_DATE),
+    incentiveAwards: createDemoIncentiveAwards(profile, reference),
     deliveryHistory: profile.deliveries.map((delivery) => ({ ...delivery })),
-    preferences: { zone: profile.zone, hours: 2, moment: momentInLima(DEMO_REFERENCE_DATE), vehicle: profile.vehicle, scheduleMode: 'now', scheduledDate: null, expenseFuel: 0, expenseMaintenance: 0, expenseOther: 0, comparisonOption: null, programStep: 'configuration', returnNeed: null, otherNeedDetail: '', savedProposal: null, savedProposals: [], editingSavedProposalId: null, proposalContinued: false, allowProgramInvitations: !profile.declaredPause, preferredContactDate: null },
+    preferences: { zone: profile.zone, hours: 2, moment: momentInLima(reference), vehicle: profile.vehicle, scheduleMode: 'now', scheduledDate: null, expenseFuel: 0, expenseMaintenance: 0, expenseOther: 0, comparisonOption: null, programStep: 'configuration', returnNeed: null, otherNeedDetail: '', savedProposal: null, savedProposals: [], editingSavedProposalId: null, proposalContinued: false, allowProgramInvitations: !profile.declaredPause, channels: { app: true, external: true }, remindersAllowed: true, consentRecordedAt: profile.declaredPause ? null : reference.toISOString(), preferredContactDate: null },
     dismissedCampaignIds: [],
     invitationResponses: {},
     externalInvitationPresentedCampaignIds: [],
@@ -144,6 +147,7 @@ function parseProfileData(value: unknown, fallback: ProfileDemoData): ProfileDem
   }).filter((item, index, list) => list.findIndex(candidate => candidate.id === item.id) === index) : []
   if (!savedProposals.length && savedProposal) savedProposals.push({ ...savedProposal, id: 'legacy-saved', referenceAt: DEMO_REFERENCE_DATE.toISOString(), tableVersion: 'demo-rates-v1 (migrada)', reminder: null })
   return {
+    revision: Number.isSafeInteger(data.revision) && data.revision! >= 0 ? data.revision! : 0,
     goals: Array.isArray(data.goals) ? data.goals.filter((item): item is string => typeof item === 'string' && item.trim().length > 0).map(item => item.trim().slice(0, 200)).slice(0, 8) : [],
     returnTracking: parseReturnTracking(data.returnTracking),
     connection: { connectedAt: typeof data.connection?.connectedAt === 'string' && Number.isFinite(Date.parse(data.connection.connectedAt)) ? data.connection.connectedAt : null },
@@ -171,6 +175,13 @@ function parseProfileData(value: unknown, fallback: ProfileDemoData): ProfileDem
       editingSavedProposalId: typeof preferences.editingSavedProposalId === 'string' && savedProposals.some(item => item.id === preferences.editingSavedProposalId) ? preferences.editingSavedProposalId : null,
       proposalContinued: preferences.proposalContinued === true,
       allowProgramInvitations: typeof preferences.allowProgramInvitations === 'boolean' ? preferences.allowProgramInvitations : fallback.preferences.allowProgramInvitations,
+      channels: {
+        app: typeof preferences.channels?.app === 'boolean' ? preferences.channels.app : fallback.preferences.channels.app,
+        external: typeof preferences.channels?.external === 'boolean' ? preferences.channels.external : fallback.preferences.channels.external,
+      },
+      remindersAllowed: typeof preferences.remindersAllowed === 'boolean' ? preferences.remindersAllowed : fallback.preferences.remindersAllowed,
+      // Older snapshots did not record consent; never manufacture a timestamp for them.
+      consentRecordedAt: typeof preferences.consentRecordedAt === 'string' && Number.isFinite(Date.parse(preferences.consentRecordedAt)) ? preferences.consentRecordedAt : null,
       preferredContactDate: typeof preferences.preferredContactDate === 'string' && isFutureDate(preferences.preferredContactDate, dateInLima(DEMO_REFERENCE_DATE)) ? preferences.preferredContactDate : null,
     },
     dismissedCampaignIds: Array.isArray(data.dismissedCampaignIds) && data.dismissedCampaignIds.every((id) => typeof id === 'string')
@@ -189,8 +200,8 @@ function parseProfileData(value: unknown, fallback: ProfileDemoData): ProfileDem
   }
 }
 
-export function createDemoState(profiles: DemoProfile[]): DemoState {
-  const profileDataById = Object.fromEntries(profiles.map((profile) => [profile.id, initialProfileData(profile)]))
+export function createDemoState(profiles: DemoProfile[], reference: Date = DEMO_REFERENCE_DATE): DemoState {
+  const profileDataById = Object.fromEntries(profiles.map((profile) => [profile.id, initialProfileData(profile, reference)]))
   return { selectedProfileId: 'inactive-recent', profileDataById }
 }
 
@@ -230,7 +241,19 @@ export function loadDemoState(profiles: DemoProfile[]): DemoState {
 
 export function saveDemoState(state: DemoState): void {
   try {
-    sessionStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(state))
+    const previous = (() => {
+      try { return JSON.parse(sessionStorage.getItem(DEMO_STORAGE_KEY) ?? 'null') as Partial<DemoState> | null }
+      catch { return null }
+    })()
+    const profileDataById = Object.fromEntries(Object.entries(state.profileDataById).map(([id, data]) => {
+      const old = previous?.profileDataById?.[id]
+      const { revision: _newRevision, ...content } = data
+      const { revision: oldRevision, ...oldContent } = old ?? { revision: 0 }
+      const baseRevision = Number.isSafeInteger(oldRevision) && oldRevision >= 0 ? oldRevision : 0
+      const revision = old && JSON.stringify(content) !== JSON.stringify(oldContent) ? baseRevision + 1 : baseRevision
+      return [id, { ...data, revision }]
+    }))
+    sessionStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify({ ...state, profileDataById }))
   } catch {
     // The visual demo remains usable if browser storage is unavailable.
   }

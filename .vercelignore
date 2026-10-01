@@ -1,5 +1,6 @@
 artifacts/
 tests/
+scripts/
 docs/
 README.md
 *.tsbuildinfo

@@ -1,6 +1,15 @@
 # HU-00 — Propuesta de acuerdo para A y B
 
-Estado: contrato propuesto para acordar antes de dividir el trabajo. No es una afirmación de que todas las nuevas historias estén implementadas. La interfaz TypeScript está en [mentor-contract.ts](mentor-contract.ts).
+Estado: acuerdo para desarrollar por entregas. B-01 ya implementa las consultas `getProfile` y `listProfiles`; las demás acciones continúan como contrato para próximas historias. La única definición TypeScript está en [src/contracts/mentor.ts](../../src/contracts/mentor.ts); [mentor-contract.ts](mentor-contract.ts) la reexporta para conservar el enlace original.
+
+### Consolidación del contrato en B-01
+
+- `MentorProfileService` es el subconjunto de consultas de `MentorService`; A puede consumirlo desde `src/services/mentor.ts`.
+- Se conserva `ProfileSnapshot` y la envoltura `ServiceResult`. El servicio devuelve un estado completo de las capacidades existentes, no un perfil suelto.
+- Fechas de creación/edición que el estado anterior no registraba admiten `null` en opciones, casos y recordatorios. A debe mostrar «Sin fecha registrada» o simplemente omitirlas; B no inventa esos instantes.
+- `legacyGoalNotes` conserva metas antiguas de texto, separado de `goals` monetarias y `contributions`. Se agregó `comparisonConfiguration` al progreso y se conserva la fecha preferida legada en preferencias.
+- `revision` cambia solo para el perfil cuyo contenido se guarda. Las consultas son de solo lectura; el chequeo de escrituras con `expectedRevision` llegará con las acciones.
+- [Respuesta completa de Camila](ejemplo-perfil-camila.json) y comando `npm run demo:b01` permiten revisar la misma estructura sin las pantallas.
 
 ## 1. Decisiones comunes
 
@@ -164,11 +173,11 @@ El catálogo actual produce ingresos simulados de 24–40 soles para esa combina
 | Metas actuales `goals: string[]` | **No satisfacen A-04/A-05**: migrar a metas monetarias y aportes. No tratar texto antiguo como dinero ahorrado. |
 | `OperationsPanel.tsx` | B conserva cohorte ficticia separada; agrega eventos de sesión y nuevas métricas cuando corresponda. |
 
-Todavía faltan el adaptador único, el servicio simulado intercambiable, metas monetarias/aportes, pausa editable con cancelación de recordatorios, rutas cercanas y otras ampliaciones de las nuevas HU. El contrato no ejecuta esas reglas por sí solo.
+Ya existe el adaptador de consulta de perfiles en `mentor.local.ts` y el punto de entrada `mentor.ts`. Todavía faltan las acciones de escritura del servicio común, el simulado intercambiable de A, metas monetarias/aportes, pausa editable con cancelación de recordatorios, rutas cercanas y otras ampliaciones de las nuevas HU. El contrato no ejecuta esas reglas por sí solo.
 
 ## 7. Reparto de archivos e integración
 
-Propuesta de estructura acordada (crear al comenzar HU-00):
+Estructura acordada (contrato y servicio de lectura ya creados en B-01):
 
 ```text
 src/contracts/              ambos, cambios coordinados
